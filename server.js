@@ -1,17 +1,28 @@
 import http from "node:http"
 import { dirname } from "node:path"
 import serveStatic from "./utils/serveStatic.js"
+import { getContentType } from "./utils/getContentType.js"
+import { getData } from "./utils/getData.js"
+import handleGet from "./handlers/routeHandlers.js"
 
 
 const PORT = 8000
 const __dirname = import.meta.dirname
-const server = http.createServer(async (req,res)=>{
-    console.log(req.url)
 
-   await serveStatic(__dirname,req,res,'text/html',200)
+const server = http.createServer(async (req,res)=>{
+
+    if(req.url.startsWith('/api')){
+        
+        if (req.method === 'GET'){
+            
+            await handleGet(res)
+        }
+    }else if(!req.url.startsWith('/api')){
+        return await serveStatic(__dirname,req,res) 
+    }
+
 
 }
-
 
 )
 
